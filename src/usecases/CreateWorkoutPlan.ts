@@ -25,6 +25,9 @@ interface InputDto {
 //   id: string;
 // }
 
+// usando o padrão de arquitetura hexagonal.
+// a classe pode ser refatorada para receber como injeção de depend~encia o
+// repository que faz comunicação com o banco
 export class CreateWorkoutPlan {
   async execute(dto: InputDto) {
     const existingWorkoutPlan = await prisma.workoutPlan.findFirst({
@@ -42,6 +45,8 @@ export class CreateWorkoutPlan {
       }
       const workoutPlan = await tx.workoutPlan.create({
         data: {
+          // podemos tambem gerar o id da forma abaixo
+          //id: crypto.randomUUID(),
           name: dto.name,
           userId: dto.userId,
           isActive: true,

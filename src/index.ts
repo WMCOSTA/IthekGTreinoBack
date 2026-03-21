@@ -3,7 +3,6 @@ import "dotenv/config";
 import fastifyCors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
 import fastifyApiReference from "@scalar/fastify-api-reference";
-import { fromNodeHeaders } from "better-auth/node";
 import Fastify from "fastify";
 import {
   jsonSchemaTransform,
@@ -13,10 +12,8 @@ import {
 } from "fastify-type-provider-zod";
 import z from "zod";
 
-import { NotFoundError } from "./errors/index.js";
-import { WeekDay } from "./generated/prisma/enums.js";
 import { auth } from "./lib/auth.js";
-import { CreateWorkoutPlan } from "./usecases/CreateWorkoutPlan.js";
+import { workoutPlanRoutes } from "./routes/workout-Plan.js";
 
 const app = Fastify({
   logger: true,
@@ -66,69 +63,22 @@ await app.register(fastifyApiReference, {
 });
 
 // RESTful
+// Routes para "workotPlan" foi adicionada em um arquibo de rotas específico(boas práticas)
 
+await app.register(workoutPlanRoutes);
+
+/*
 app.withTypeProvider<ZodTypeProvider>().route({
   method: "POST",
   url: "/workout-plans",
   schema: {
-    body: z.object({
-      name: z.string().trim().min(1),
-      workoutDays: z.array(
-        z.object({
-          name: z.string().trim().min(1),
-          weekDay: z.nativeEnum(WeekDay),
-          isRest: z.boolean().default(false),
-          estimatedDurationInSeconds: z.number().min(1),
-          exercises: z.array(
-            z.object({
-              order: z.number().min(0),
-              name: z.string().trim().min(1),
-              sets: z.number().min(1),
-              reps: z.number().min(1),
-              restTimeInSeconds: z.number().min(1),
-            }),
-          ),
-        }),
-      ),
-    }),
+    body: WorkoutPlanSchema.omit({ id: true }),
     response: {
-      201: z.object({
-        id: z.uuid(),
-        name: z.string().trim().min(1),
-        workoutDays: z.array(
-          z.object({
-            name: z.string().trim().min(1),
-            weekDay: z.enum(WeekDay),
-            isRest: z.boolean().default(false),
-            estimatedDurationInSeconds: z.number().min(1),
-            exercises: z.array(
-              z.object({
-                order: z.number().min(0),
-                name: z.string().trim().min(1),
-                sets: z.number().min(1),
-                reps: z.number().min(1),
-                restTimeInSeconds: z.number().min(1),
-              }),
-            ),
-          }),
-        ),
-      }),
-      400: z.object({
-        error: z.string(),
-        code: z.string(),
-      }),
-      401: z.object({
-        error: z.string(),
-        code: z.string(),
-      }),
-      404: z.object({
-        error: z.string(),
-        code: z.string(),
-      }),
-      500: z.object({
-        error: z.string(),
-        code: z.string(),
-      }),
+      201: WorkoutPlanSchema,
+      400: ErrorSchema,
+      401: ErrorSchema,
+      404: ErrorSchema,
+      500: ErrorSchema,
     },
   },
   handler: async (request, reply) => {
@@ -164,6 +114,7 @@ app.withTypeProvider<ZodTypeProvider>().route({
     }
   },
 });
+*/
 
 // Controller
 

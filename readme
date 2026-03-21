@@ -260,7 +260,7 @@ Datasource "db": PostgreSQL database "app-treinos-db", schema "public" at "127.0
 
 Your database is now in sync with your Prisma schema. Done in 2.29s
 
-****\*\*****\*\*****\*\***** Verificando ciação do banco e tabelas **\*\***\*\*\*\***\*\***
+\***\*\*\*\*\***\*\*\***\*\*\*\*\*** Verificando ciação do banco e tabelas **\*\***\*\*\*\***\*\***
 
 PS C:\Ithek-Projetos\FullStackClub\Saas-FullStack\Ithek-Treinos> npx prisma studio  
 Loaded Prisma config from prisma.config.ts.
@@ -411,9 +411,55 @@ EXIBE A DOCUMENTAÇÃO DE FORMA MAIS BONITA E ORGANIZADA
 
 PS C:\Ithek-Projetos\FullStackClub\Saas-FullStack\Ithek-Treinos> npm install @scalar/fastify-api-reference@1.44.20
 
-TESTANDO A APLICAÇÃO
+**\*\***\***\*\*** Commit com SETUP + EndPoint WorkoutPlan persistindo **\*\*\*\***\*\*\*\***\*\*\*\***
+
+PS C:\Ithek-Projetos\FullStackClub\Saas-FullStack\IthekGTreinoBack> git commit -m "Setup com endpoint WorkoutPlan persistindo"
 
 PS C:\Ithek-Projetos\FullStackClub\Saas-FullStack\Ithek-Treinos> npm run dev
+
+                    **************** TESTE  NA APLICAÇÃO OK ****************
+
+\*** CRIANDO AS REGRAS DA APLICAÇÃO O MODELO DE IA USAR COM BASE NA ARQUITETURA DO PROJETO **\*\*\*
+
+1. Criar o arquivo .cursorrules (O mais importante)
+   Crie um arquivo chamado .cursorrules na raiz do seu projeto. Nele, você descreve a arquitetura para o modelo.
+   Cole este conteúdo (baseado no seu código):
+
+Você é um especialista em Node.js, Fastify, Prisma e Zod.
+Siga rigorosamente este padrão de arquitetura:
+
+1. Camada de Roteamento (index.ts):
+   - Use Fastify com ZodTypeProvider para validação.
+   - Sempre use z.nativeEnum() para Enums do Prisma.
+   - Use camelCase para propriedades (ex: weekDay, não weekday).
+
+2. Camada de Casos de Uso (src/usecases/):
+   - Cada funcionalidade deve ter sua própria classe.
+   - Use DTOs (interfaces) para entrada de dados.
+   - Use o Prisma para persistência dentro de transações se houver múltiplas escritas.
+
+3. Tratamento de Erros:
+   - Use a pasta src/errors/ para exceções personalizadas.
+   - Capture erros específicos no handler do Fastify e retorne os status codes corretos (404, 401, etc).
+
+4. Banco de Dados:
+   - O schema do Prisma está em prisma/schema.prisma.
+   - O cliente gerado fica em src/generated/prisma.
+5. Garantir que o Codebase está Indexado
+   O Cursor precisa ler todos os seus arquivos para entender as relações entre eles.
+   Vá em Settings (ícone de engrenagem no canto superior direito ou Ctrl/Cmd + Shift + J).
+   Vá em General -> Features -> Codebase Indexing.
+   Verifique se o status está como "Indexed". Se não estiver, clique em Resync.
+6. Como pedir para o modelo analisar (Chat/Composer)
+   Sempre que for criar algo novo ou corrigir um erro, use o símbolo @ para dar contexto.
+   Para entender a arquitetura:
+   @Codebase analise meus arquivos em /usecases e /errors. Qual é o padrão de injeção de dependência e tratamento de erros que estou usando?
+   Para criar um novo recurso seguindo o padrão:
+   @Codebase crie um novo usecase chamado DeleteWorkoutPlan seguindo o mesmo padrão de DTO e tratamento de erro do CreateWorkoutPlan.ts.
+   Dica Bônus: O comando "Resync Index"
+   Se você fez muitas alterações estruturais (moveu pastas, mudou o Prisma), você pode forçar o reconhecimento abrindo o chat (Ctrl + L) e digitando:
+   /refresh (ou apenas clicando no botão de sincronismo que aparece no campo de busca do @Codebase).
+   Resumo: O segredo não é um comando de execução, mas sim o arquivo .cursorrules. Ele serve como um "manual de instruções" permanente para a IA do Cursor toda vez que ela ler seu código.
 
 balança de bioimpedancia FitDays
 
