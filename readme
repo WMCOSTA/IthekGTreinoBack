@@ -574,7 +574,13 @@ passo3 - Selecionar o repositorio do projeto
 
 FELIPE!!! VERIFICAR NO FSC COMO IMPLEMENTAR PLANO DE ASSINATURA NO MEU PROJETO
 
+****************** ERRO NO GIT **********
 
+4. Limpe o cache do Git para esse arquivo
+Isso garante que o Git pare de rastrear esse arquivo totalmente:
+code
+Bash
+git rm -r --cached google_client_secret.json
 
 **\*\***\*\*\*\***\*\***Balança de bioimpedancia FitDays **\*\*\*\***\*\*\***\*\*\*\***
 
