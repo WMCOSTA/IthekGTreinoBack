@@ -10,9 +10,10 @@ const envSchema = z.object({
   API_BASE_URL: z.url().default("http://localhost:8080"),
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
-  GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
+  //GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
   OPENAI_API_KEY: z.string().optional(),
-  WEB_APP_BASE_URL: z.url(),
+  //WEB_APP_BASE_URL: z.url(),
+  WEB_APP_BASE_URL: ("https://gtreino.online"),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),

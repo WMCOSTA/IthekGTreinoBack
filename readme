@@ -566,11 +566,76 @@ docker run + "id_imagem"
 
 **\*\*\*\***\*\*\***\*\*\*\*** DEPLOY NO RENDER **\*\***\*\***\*\***\*\***\*\***\*\***\*\***
 
-DÚVIDA! COMO IDENTIFICAR OS VALORES DAS VARIÁVEIS DE AMBIENTE PARA CONFIGURAR NO RENDER
+1 - Criação do projeto
 
 passo1 - Criar uma conta - create new web service
 passo2 - selecionar o repositório do gitHUb
 passo3 - Selecionar o repositorio do projeto
+
+
+2 - CONFIGURA OS VALORES DAS VARIÁVEIS DE AMBIENTE CONFORME ARQUIVO env.ts
+
+****** NO "NEON" CRIAR UM NOVO PROJETO PARA GERAR A URL DE CONEXÃO BANCO ********
+
+- NEW PROJECT
+- INFORME NOME, VERSAO, PROVIDER E REGION
+- CREATED
+
+APÓS SE CONECTAR, SERÁ GERADA A URL:
+
+DATABASE_URL="postgresql://postgres:password@127.0.0.1:5432/bootcamp-treinos-api?schema=public"
+
+3 - MIGRA AS TABELAS PARA O BANCO DE DADOS CRIADO NO NEON - ALTERAR NO .env para url de conexão com NEON
+
+# URL - NEON
+DATABASE_URL="postgresql://neondb_owner:npg_5YsZ8caAjKoJ@ep-fragrant-pond-amrtrttq-pooler.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+
+# URL CONEXÃO LOCAL
+#DATABASE_URL="postgresql://postgres:password@127.0.0.1:5432/bootcamp-treinos-api?schema=public"
+
+4 - EXECUTAR 
+
+!!! migration é um arquivo SQL que contendo todas as mudanção do banco
+
+PS C:\Ithek-Projetos\FullStackClub\Saas-FullStack\IthekGTreinoBack>npx prisma migrate dev --name init
+
+Prisma schema loaded from prisma\schema.prisma.
+Datasource "db": PostgreSQL database "neondb", schema "public" at "ep-fragrant-pond-amrtrttq-pooler.c-5.us-east-1.aws.neon.tech"
+
+Applying migration `20260329160325_init`
+
+The following migration(s) have been created and applied from new schema changes:
+
+prisma\migrations/
+  └─ 20260329160325_init/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 7.5.0 -> 7.6.0                        │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+
+
+5 - AGOARA APLICAR NO DEPLOY
+
+PS C:\Ithek-Projetos\FullStackClub\Saas-FullStack\IthekGTreinoBack>npx prisma migrate deploy
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+Datasource "db": PostgreSQL database "neondb", schema "public" at "ep-fragrant-pond-amrtrttq-pooler.c-5.us-east-1.aws.neon.tech"
+
+1 migration found in prisma/migrations
+
+
+No pending migrations to apply.
+
+
+6 - 
 
 FELIPE!!! VERIFICAR NO FSC COMO IMPLEMENTAR PLANO DE ASSINATURA NO MEU PROJETO
 
@@ -582,8 +647,108 @@ code
 Bash
 git rm -r --cached google_client_secret.json
 
+
+!!! ERRO NO DEPLOY - COMPARTILHAMENTO de COOKIES NO domínio onrender.com por ser publico NÃO É PERMITIDO 
+
+QUAL SOLUÇÃO? 
+
+1 - REGISTRA UM DOMINIO (gtreino.online)
+2 - Configura no Render
+- Selecione o projeto - settings - Custom Domains - Add Custom Domain e "gtreino.online)"
+
+*************************** configurar os registros de DNS ******************
+
+Descreva passo a passo como configurar os registros de DNS de forma que oa digitar no browser o dominio "gtreino.online" que está registrado na GoDaddy seja direcionado para minha aplicação que está deployada no Render conforme URLs abaixo:
+URL Backend:
+
+https://ithekgtreinoback.onrender.com
+URL Frontend:
+https://ithekgtreinofront.onrender.com
+
+
+/////********configurar o seu domínio gtreino.online (GoDaddy)******//////////
+
+
+Para configurar o seu domínio gtreino.online (GoDaddy) para apontar para o seu Frontend no Render e criar um subdomínio (ex: api.gtreino.online) para o seu Backend, siga este passo a passo:
+
+Passo 1: Configurar o Frontend no Render
+
+Normalmente, o domínio principal (gtreino.online) aponta para o Frontend, que é o que o usuário vê.
+Acesse o painel do Render.
+Clique no seu serviço de Frontend (ithekgtreinofront).
+No menu lateral, clique em Settings.
+Role até a seção Custom Domains e clique em Add Custom Domain.
+Digite gtreino.online e clique em Save.
+Repita o processo e adicione www.gtreino.online.
+O Render mostrará as instruções de DNS. Anote o endereço IP que ele fornecer para o registro "A" e o hostname (geralmente ithekgtreinofront.onrender.com) para o registro "CNAME".
+
+Passo 2: Configurar o Backend no Render
+
+Para que o seu frontend consiga conversar com o backend usando o mesmo domínio, vamos criar o subdomínio api.gtreino.online.
+No painel do Render, clique no seu serviço de Backend (ithekgtreinoback).
+Vá em Settings -> Custom Domains -> Add Custom Domain.
+Digite api.gtreino.online e clique em Save.
+Anote o hostname de destino (geralmente ithekgtreinoback.onrender.com).
+
+Passo 3: Configurar o DNS na GoDaddy
+
+Agora, acesse sua conta na GoDaddy para criar os registros.
+Vá em Meus Produtos -> Encontre o domínio gtreino.online -> Clique em DNS.
+Você precisará adicionar/editar 3 registros principais:
+Tipo	Nome (Host)	Valor (Aponta para)	Notas
+A	@	216.24.57.1 (Confirme o IP no painel do Render)	Direciona o domínio "raiz" para o Frontend
+CNAME	www	ithekgtreinofront.onrender.com	Direciona o www para o Frontend
+CNAME	api	ithekgtreinoback.onrender.com	Cria o endereço api.gtreino.online para o Backend
+Observação: Se já existirem registros "A" com nome @ ou CNAME com nome www, edite-os em vez de criar novos.
+
+Passo 4: Atualizar as Variáveis de Ambiente (MUITO IMPORTANTE)
+
+Como você mudou os domínios, sua aplicação precisa saber disso para evitar erros de CORS.
+No Backend (Render):
+Vá em Environment.
+Atualize a variável que controla o CORS (se houver) para permitir https://gtreino.online.
+No Frontend (Render):
+Vá em Environment.
+Atualize a variável API_URL (ou similar) para apontar para https://api.gtreino.online em vez da URL do Render.
+No Google Cloud Console (OAuth):
+Como você usa Google Login, você precisa adicionar https://gtreino.online e https://api.gtreino.online nos "Domínios Autorizados" e nas "URLs de Redirecionamento" dentro do seu console do Google.
+
+Passo 5: Aguardar a Propagação e SSL
+
+Propagação: Alterações de DNS podem levar de alguns minutos até 24 horas para funcionar em todos os lugares.
+SSL: O Render gera certificados SSL (HTTPS) automaticamente assim que o DNS é verificado. Pode levar alguns minutos após a configuração para o cadeado aparecer no navegador.
+
+Como testar:
+Abra o terminal (CMD ou PowerShell) e digite:
+ping gtreino.online (Deve mostrar o IP do Render).
+ping api.gtreino.online (Deve mostrar o endereço do Render).
+
+*********************//////////////////***************/////////////////
+
+Corrija! No item 5 do  Passo 1: Configurar o Frontend no Render, ocorre o erro abaixo ao tentar salvar
+This domain already exists on another site. Please delete it from that site and try again.
+Model 18:17
+ThinkingThoughts
+Expand to view model thoughts
+
+chevron_right
+Esse erro acontece porque o Render não permite que o mesmo domínio exato (gtreino.online) esteja vinculado a dois serviços diferentes ao mesmo tempo.
+Provavelmente, você tentou adicionar gtreino.online tanto no Backend quanto no Frontend, ou ele ficou "preso" em algum serviço antigo que você criou para testes.
+Para corrigir, siga estes passos:
+1. Verifique o seu serviço de BACKEND
+É muito comum as pessoas tentarem colocar o domínio principal no backend primeiro.
+Vá ao Dashboard do Render e clique no serviço ithekgtreinoback.
+Vá em Settings -> Custom Domains.
+Se o domínio gtreino.online (ou www.gtreino.online) aparecer lá, clique no "X" ou na lixeira para removê-lo.
+Certifique-se de que no Backend fique apenas o subdomínio: api.gtreino.online.
+
+
+
+
 **\*\***\*\*\*\***\*\***Balança de bioimpedancia FitDays **\*\*\*\***\*\*\***\*\*\*\***
 
 resumo de todas as taxas corporais conforme peso, idade e altura
 
 LETRAS A e F + ? PARA GERAR CERTIFICADO
+
+
