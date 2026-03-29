@@ -11,7 +11,6 @@ interface InputDto {
     weekDay: WeekDay;
     isRest: boolean;
     estimatedDurationInSeconds: number;
-    coverImageUrl?: string;
     exercises: Array<{
       order: number;
       name: string;
@@ -22,27 +21,15 @@ interface InputDto {
   }>;
 }
 
-interface OutputDto {
-  id: string;
-  name: string;
-  workoutDays: Array<{
-    name: string;
-    weekDay: WeekDay;
-    isRest: boolean;
-    estimatedDurationInSeconds: number;
-    coverImageUrl?: string;
-    exercises: Array<{
-      order: number;
-      name: string;
-      sets: number;
-      reps: number;
-      restTimeInSeconds: number;
-    }>;
-  }>;
-}
+// export interface OutputDto {
+//   id: string;
+// }
 
+// usando o padrão de arquitetura hexagonal.
+// a classe pode ser refatorada para receber como injeção de depend~encia o
+// repository que faz comunicação com o banco
 export class CreateWorkoutPlan {
-  async execute(dto: InputDto): Promise<OutputDto> {
+  async execute(dto: InputDto) {
     const existingWorkoutPlan = await prisma.workoutPlan.findFirst({
       where: {
         isActive: true,
@@ -58,7 +45,8 @@ export class CreateWorkoutPlan {
       }
       const workoutPlan = await tx.workoutPlan.create({
         data: {
-          id: crypto.randomUUID(),
+          // podemos tambem gerar o id da forma abaixo
+          //id: crypto.randomUUID(),
           name: dto.name,
           userId: dto.userId,
           isActive: true,
@@ -68,7 +56,6 @@ export class CreateWorkoutPlan {
               weekDay: workoutDay.weekDay,
               isRest: workoutDay.isRest,
               estimatedDurationInSeconds: workoutDay.estimatedDurationInSeconds,
-              coverImageUrl: workoutDay.coverImageUrl,
               exercises: {
                 create: workoutDay.exercises.map((exercise) => ({
                   name: exercise.name,
@@ -95,24 +82,7 @@ export class CreateWorkoutPlan {
       if (!result) {
         throw new NotFoundError("Workout plan not found");
       }
-      return {
-        id: result.id,
-        name: result.name,
-        workoutDays: result.workoutDays.map((day) => ({
-          name: day.name,
-          weekDay: day.weekDay,
-          isRest: day.isRest,
-          estimatedDurationInSeconds: day.estimatedDurationInSeconds,
-          coverImageUrl: day.coverImageUrl ?? undefined,
-          exercises: day.exercises.map((exercise) => ({
-            order: exercise.order,
-            name: exercise.name,
-            sets: exercise.sets,
-            reps: exercise.reps,
-            restTimeInSeconds: exercise.restTimeInSeconds,
-          })),
-        })),
-      };
+      return result;
     });
   }
 }

@@ -13,10 +13,29 @@ import {
 import z from "zod";
 
 import { auth } from "./lib/auth.js";
-import { workoutPlanRoutes } from "./routes/workout-Plan.js";
+import { env } from "./lib/env.js";
+import { aiRoutes } from "./routes/ai.js";
+import { homeRoutes } from "./routes/home.js";
+import { meRoutes } from "./routes/me.js";
+import { statsRoutes } from "./routes/stats.js";
+import { workoutPlanRoutes } from "./routes/workout-plan.js";
+
+const envToLogger = {
+  development: {
+    transport: {
+      target: "pino-pretty",
+      options: {
+        translateTime: "HH:MM:ss Z",
+        ignore: "pid,hostname",
+      },
+    },
+  },
+  production: true,
+  test: false,
+};
 
 const app = Fastify({
-  logger: true,
+  logger: envToLogger[env.NODE_ENV],
 });
 
 app.setValidatorCompiler(validatorCompiler);
@@ -31,8 +50,8 @@ await app.register(fastifySwagger, {
     },
     servers: [
       {
-        description: "Localhost",
-        url: "http://localhost:8081",
+        description: "API Base URL",
+        url: env.API_BASE_URL,
       },
     ],
   },
@@ -40,7 +59,7 @@ await app.register(fastifySwagger, {
 });
 
 await app.register(fastifyCors, {
-  origin: ["http://localhost:3000"],
+  origin: [env.WEB_APP_BASE_URL],
   credentials: true,
 });
 
@@ -63,60 +82,12 @@ await app.register(fastifyApiReference, {
 });
 
 // RESTful
-// Routes para "workotPlan" foi adicionada em um arquibo de rotas específico(boas práticas)
-
-await app.register(workoutPlanRoutes);
-
-/*
-app.withTypeProvider<ZodTypeProvider>().route({
-  method: "POST",
-  url: "/workout-plans",
-  schema: {
-    body: WorkoutPlanSchema.omit({ id: true }),
-    response: {
-      201: WorkoutPlanSchema,
-      400: ErrorSchema,
-      401: ErrorSchema,
-      404: ErrorSchema,
-      500: ErrorSchema,
-    },
-  },
-  handler: async (request, reply) => {
-    try {
-      const session = await auth.api.getSession({
-        headers: fromNodeHeaders(request.headers),
-      });
-      if (!session) {
-        return reply.status(401).send({
-          error: "Unauthorized",
-          code: "UNAUTHORIZED",
-        });
-      }
-      const createWorkoutPlan = new CreateWorkoutPlan();
-      const result = await createWorkoutPlan.execute({
-        userId: session.user.id,
-        name: request.body.name,
-        workoutDays: request.body.workoutDays,
-      });
-      return reply.status(201).send(result);
-    } catch (error) {
-      app.log.error(error);
-      if (error instanceof NotFoundError) {
-        return reply.status(404).send({
-          error: error.message,
-          code: "NOT_FOUND_ERROR",
-        });
-      }
-      return reply.status(500).send({
-        error: "Internal server error",
-        code: "INTERNAL_SERVER_ERROR",
-      });
-    }
-  },
-});
-*/
-
-// Controller
+// Routes
+await app.register(homeRoutes, { prefix: "/home" });
+await app.register(meRoutes, { prefix: "/me" });
+await app.register(statsRoutes, { prefix: "/stats" });
+await app.register(workoutPlanRoutes, { prefix: "/workout-plans" });
+await app.register(aiRoutes, { prefix: "/ai" });
 
 app.withTypeProvider<ZodTypeProvider>().route({
   method: "GET",
@@ -151,6 +122,9 @@ app.withTypeProvider<ZodTypeProvider>().route({
 app.route({
   method: ["GET", "POST"],
   url: "/api/auth/*",
+  schema: {
+    hide: true,
+  },
   async handler(request, reply) {
     try {
       // Construct request URL
@@ -184,7 +158,7 @@ app.route({
 });
 
 try {
-  await app.listen({ port: Number(process.env.PORT) || 8081 });
+  await app.listen({ host: "0.0.0.0", port: env.PORT });
 } catch (err) {
   app.log.error(err);
   process.exit(1);

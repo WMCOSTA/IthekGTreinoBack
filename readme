@@ -417,7 +417,9 @@ PS C:\Ithek-Projetos\FullStackClub\Saas-FullStack\IthekGTreinoBack> git commit -
 
 PS C:\Ithek-Projetos\FullStackClub\Saas-FullStack\Ithek-Treinos> npm run dev
 
-                    **************** TESTE  NA APLICAÇÃO OK ****************
+                    **************** TESTE NA APLICAÇÃO OK ****************
+
+**\*\***\*\*\*\***\*\*** INICIANDO O USO DE IA NA APLICAÇÃO **\*\***\*\*\*\***\*\***
 
 \*** CRIANDO AS REGRAS DA APLICAÇÃO O MODELO DE IA USAR COM BASE NA ARQUITETURA DO PROJETO **\*\*\*
 
@@ -461,6 +463,121 @@ Siga rigorosamente este padrão de arquitetura:
    /refresh (ou apenas clicando no botão de sincronismo que aparece no campo de busca do @Codebase).
    Resumo: O segredo não é um comando de execução, mas sim o arquivo .cursorrules. Ele serve como um "manual de instruções" permanente para a IA do Cursor toda vez que ela ler seu código.
 
-balança de bioimpedancia FitDays
+\***\*\*\*\*\*\*** CRIAÇÃO DE PROMPTS PARA IA IMPLEMENTAR NOVAS FUNCIONALIDADES **\***
+
+usar SEMPRE os modelos:
+
+- opus 4.6
+- Sonete
+- Gemini 3.5 pro
+- GPT 5.2
+
+Prompt01 - Alterando o usecase CreateWorkoutPlan para retornar uma interface DTO
+
+Descrição: Em @src\usecases\CreateWorkoutPlan.ts faça a alteração para retornar uma interface DTO. Atualize também o arquivo de rota @src\routes\workout-plan.ts
+
+Campo "coverImageURL" adicionado ao model WorkoutDay
+Prompt02 - Adicione o camp coverImageURL na rota do create workout plan ao criar os dias do plano de treino
+
+Pesquisar no Commit b9aa507 - Create workout plan coverImageUrl rturn
+
+
+O BetterAuth é uma biblioteca de autenticação moderna, focada em TypeScript, projetada para ser simples de configurar e altamente extensível. Ele gerencia todo o fluxo de autenticação (sessões, cookies, tokens, provedores sociais como Google/GitHub) e se integra perfeitamente a ORMs como o Prisma.
+No seu código, ele está sendo configurado para usar o Prisma como banco de dados e o Google como provedor de login social.
+Abaixo, apresento o passo a passo para configurar as variáveis de ambiente necessárias no seu arquivo .env para que os arquivos env.ts e auth.ts funcionem corretamente.
+Passo a Passo de Configuração
+Crie um arquivo chamado .env na raiz do seu projeto e preencha-o seguindo estas etapas:
+1. Configurações de Servidor e Banco de Dados
+PORT: A porta onde seu servidor backend vai rodar (padrão 8080).
+DATABASE_URL: A string de conexão com seu banco de dados PostgreSQL.
+Formato: postgresql://usuario:senha@localhost:5432/nome_do_banco
+2. Segurança do BetterAuth
+BETTER_AUTH_SECRET: Uma chave aleatória e segura usada para assinar cookies e tokens.
+Como gerar: Você pode rodar openssl rand -base64 32 no terminal ou digitar uma sequência longa e aleatória de caracteres.
+3. URLs de Redirecionamento e Origem
+API_BASE_URL: A URL onde seu servidor backend (onde o BetterAuth está instalado) está rodando.
+WEB_APP_BASE_URL: A URL do seu frontend (ex: React, Next.js). O BetterAuth usa isso para o trustedOrigins, permitindo que o frontend se comunique com o backend.
+4. Configuração do Google OAuth
+Para obter essas chaves, você deve ir ao Google Cloud Console:
+Crie um projeto.
+Vá em "APIs e Serviços" > "Tela de consentimento OAuth" e configure-a.
+Vá em "Credenciais" > "Criar Credenciais" > "ID do cliente OAuth".
+Adicione a URL do seu backend em "Origens JavaScript autorizadas" e sua_url/api/auth/callback/google em "URIs de redirecionamento autorizados".
+GOOGLE_CLIENT_ID: O ID gerado pelo Google.
+GOOGLE_CLIENT_SECRET: A chave secreta gerada pelo Google.
+5. Chaves de IA (Opcionais no Auth, mas exigidas no env.ts)
+GOOGLE_GENERATIVE_AI_API_KEY: Sua chave da API do Google Gemini.
+OPENAI_API_KEY: Sua chave da API da OpenAI (pode ficar vazia ou não ser definida, pois o Zod a marcou como .optional()).
+6. Ambiente
+NODE_ENV: Define se o app está em development, production ou test.
+Exemplo de arquivo .env preenchido
+code
+Env
+# Servidor e Banco
+PORT=8080
+DATABASE_URL="postgresql://postgres:suasenha@localhost:5432/meubanco?schema=public"
+NODE_ENV="development"
+
+# Segurança do BetterAuth
+BETTER_AUTH_SECRET="uma_chave_muito_grande_e_aleatoria_aqui"
+
+# URLs
+API_BASE_URL="http://localhost:8080"
+WEB_APP_BASE_URL="http://localhost:3000"
+
+# Google OAuth
+GOOGLE_CLIENT_ID="seu_id_do_google.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="sua_chave_secreta_do_google"
+
+# APIs de IA
+GOOGLE_GENERATIVE_AI_API_KEY="sua_chave_gemini_aqui"
+OPENAI_API_KEY="sk-..." # Opcional
+Explicação das Regras nos Arquivos
+Validação com Zod (env.ts):
+O arquivo env.ts garante que o sistema nem chegue a rodar se faltar alguma variável obrigatória ou se o formato estiver errado (ex: DATABASE_URL deve começar com postgresql://).
+O z.coerce.number() transforma a string "8080" do .env em um número real.
+Integração no auth.ts:
+baseURL: Diz ao BetterAuth qual é o endereço principal da API.
+trustedOrigins: Permite que o seu frontend (WEB_APP_BASE_URL) faça requisições de login.
+prismaAdapter: Faz com que o BetterAuth salve usuários e sessões automaticamente nas tabelas do seu banco de dados via Prisma.
+crossSubDomainCookies: No seu código, está configurado para que, em produção, os cookies funcionem em todos os subdomínios de .fullstackclub.com.br.
+openAPI(): Um plugin que gera documentação automática das rotas de autenticação.
+Dica: Certifique-se de que as tabelas do BetterAuth foram criadas no banco de dados (geralmente via npx prisma migrate dev ou npx better-auth migrate).
+
+
+\***\*\*\*\*\*\*\*** DEPLOY DA APLICAÇÃO USANDO DOCKER \***\*\*\*\*\***\*\***\*\*\*\*\***
+
+- Configuração no dockerFile Testando a criação da imagem
+
+docker build . -t bootcamp-treinos-api
+
+. informa que deve executar o dockerfile que está na raiz do projeto
+-t define um nome para a imagem
+
+Obs: O docker deve estar instalado e em execução na máquina local
+
+- Listando a imagem
+
+docker image ls
+
+- Executando a imagem
+
+docker run + "id_imagem"
+
+**\*\*\*\***\*\*\***\*\*\*\*** DEPLOY NO RENDER **\*\***\*\***\*\***\*\***\*\***\*\***\*\***
+
+DÚVIDA! COMO IDENTIFICAR OS VALORES DAS VARIÁVEIS DE AMBIENTE PARA CONFIGURAR NO RENDER
+
+passo1 - Criar uma conta - create new web service
+passo2 - selecionar o repositório do gitHUb
+passo3 - Selecionar o repositorio do projeto
+
+FELIPE!!! VERIFICAR NO FSC COMO IMPLEMENTAR PLANO DE ASSINATURA NO MEU PROJETO
+
+
+
+**\*\***\*\*\*\***\*\***Balança de bioimpedancia FitDays **\*\*\*\***\*\*\***\*\*\*\***
 
 resumo de todas as taxas corporais conforme peso, idade e altura
+
+LETRAS A e F + ? PARA GERAR CERTIFICADO
