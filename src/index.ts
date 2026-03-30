@@ -36,6 +36,7 @@ const envToLogger = {
 
 const app = Fastify({
   logger: envToLogger[env.NODE_ENV],
+  trustProxy: true,
 });
 
 app.setValidatorCompiler(validatorCompiler);
@@ -59,8 +60,12 @@ await app.register(fastifySwagger, {
 });
 
 await app.register(fastifyCors, {
-  origin: [String(env.WEB_APP_BASE_URL)],
+  origin: [env.WEB_APP_BASE_URL,
+    "https://gtreino.online", 
+    "https://www.gtreino.online"
+  ],
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
 });
 
 await app.register(fastifyApiReference, {
