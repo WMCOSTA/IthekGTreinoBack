@@ -105,6 +105,7 @@ app.withTypeProvider<ZodTypeProvider>().route({
   },
 });
 
+/*
 app.withTypeProvider<ZodTypeProvider>().route({
   method: "GET",
   url: "/",
@@ -123,7 +124,7 @@ app.withTypeProvider<ZodTypeProvider>().route({
     };
   },
 });
-
+*/
 app.route({
   method: ["GET", "POST"],
   url: "/api/auth/*",
