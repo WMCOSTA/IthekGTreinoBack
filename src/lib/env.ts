@@ -9,7 +9,7 @@ const envSchema = z.object({
   BETTER_AUTH_URL: z.string().url().default("https://gtreino.online/"),
   // No Render tá configurado na porta 8080 ao inves 8081 - trecho da aula 48:31 
 //  API_BASE_URL: z.string().url().default("http://localhost:8080"),
-  API_BASE_URL: z.string().url().default("https://gtreino.online/"),
+  API_BASE_URL: z.string().url().default("https://api.gtreino.online/"),
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
   //GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
