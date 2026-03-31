@@ -481,55 +481,61 @@ Prompt02 - Adicione o camp coverImageURL na rota do create workout plan ao criar
 
 Pesquisar no Commit b9aa507 - Create workout plan coverImageUrl rturn
 
-
 O BetterAuth é uma biblioteca de autenticação moderna, focada em TypeScript, projetada para ser simples de configurar e altamente extensível. Ele gerencia todo o fluxo de autenticação (sessões, cookies, tokens, provedores sociais como Google/GitHub) e se integra perfeitamente a ORMs como o Prisma.
 No seu código, ele está sendo configurado para usar o Prisma como banco de dados e o Google como provedor de login social.
 Abaixo, apresento o passo a passo para configurar as variáveis de ambiente necessárias no seu arquivo .env para que os arquivos env.ts e auth.ts funcionem corretamente.
 Passo a Passo de Configuração
 Crie um arquivo chamado .env na raiz do seu projeto e preencha-o seguindo estas etapas:
+
 1. Configurações de Servidor e Banco de Dados
-PORT: A porta onde seu servidor backend vai rodar (padrão 8080).
-DATABASE_URL: A string de conexão com seu banco de dados PostgreSQL.
-Formato: postgresql://usuario:senha@localhost:5432/nome_do_banco
+   PORT: A porta onde seu servidor backend vai rodar (padrão 8080).
+   DATABASE_URL: A string de conexão com seu banco de dados PostgreSQL.
+   Formato: postgresql://usuario:senha@localhost:5432/nome_do_banco
 2. Segurança do BetterAuth
-BETTER_AUTH_SECRET: Uma chave aleatória e segura usada para assinar cookies e tokens.
-Como gerar: Você pode rodar openssl rand -base64 32 no terminal ou digitar uma sequência longa e aleatória de caracteres.
+   BETTER_AUTH_SECRET: Uma chave aleatória e segura usada para assinar cookies e tokens.
+   Como gerar: Você pode rodar openssl rand -base64 32 no terminal ou digitar uma sequência longa e aleatória de caracteres.
 3. URLs de Redirecionamento e Origem
-API_BASE_URL: A URL onde seu servidor backend (onde o BetterAuth está instalado) está rodando.
-WEB_APP_BASE_URL: A URL do seu frontend (ex: React, Next.js). O BetterAuth usa isso para o trustedOrigins, permitindo que o frontend se comunique com o backend.
+   API_BASE_URL: A URL onde seu servidor backend (onde o BetterAuth está instalado) está rodando.
+   WEB_APP_BASE_URL: A URL do seu frontend (ex: React, Next.js). O BetterAuth usa isso para o trustedOrigins, permitindo que o frontend se comunique com o backend.
 4. Configuração do Google OAuth
-Para obter essas chaves, você deve ir ao Google Cloud Console:
-Crie um projeto.
-Vá em "APIs e Serviços" > "Tela de consentimento OAuth" e configure-a.
-Vá em "Credenciais" > "Criar Credenciais" > "ID do cliente OAuth".
-Adicione a URL do seu backend em "Origens JavaScript autorizadas" e sua_url/api/auth/callback/google em "URIs de redirecionamento autorizados".
-GOOGLE_CLIENT_ID: O ID gerado pelo Google.
-GOOGLE_CLIENT_SECRET: A chave secreta gerada pelo Google.
+   Para obter essas chaves, você deve ir ao Google Cloud Console:
+   Crie um projeto.
+   Vá em "APIs e Serviços" > "Tela de consentimento OAuth" e configure-a.
+   Vá em "Credenciais" > "Criar Credenciais" > "ID do cliente OAuth".
+   Adicione a URL do seu backend em "Origens JavaScript autorizadas" e sua_url/api/auth/callback/google em "URIs de redirecionamento autorizados".
+   GOOGLE_CLIENT_ID: O ID gerado pelo Google.
+   GOOGLE_CLIENT_SECRET: A chave secreta gerada pelo Google.
 5. Chaves de IA (Opcionais no Auth, mas exigidas no env.ts)
-GOOGLE_GENERATIVE_AI_API_KEY: Sua chave da API do Google Gemini.
-OPENAI_API_KEY: Sua chave da API da OpenAI (pode ficar vazia ou não ser definida, pois o Zod a marcou como .optional()).
+   GOOGLE_GENERATIVE_AI_API_KEY: Sua chave da API do Google Gemini.
+   OPENAI_API_KEY: Sua chave da API da OpenAI (pode ficar vazia ou não ser definida, pois o Zod a marcou como .optional()).
 6. Ambiente
-NODE_ENV: Define se o app está em development, production ou test.
-Exemplo de arquivo .env preenchido
-code
-Env
+   NODE_ENV: Define se o app está em development, production ou test.
+   Exemplo de arquivo .env preenchido
+   code
+   Env
+
 # Servidor e Banco
+
 PORT=8080
 DATABASE_URL="postgresql://postgres:suasenha@localhost:5432/meubanco?schema=public"
 NODE_ENV="development"
 
 # Segurança do BetterAuth
+
 BETTER_AUTH_SECRET="uma_chave_muito_grande_e_aleatoria_aqui"
 
 # URLs
+
 API_BASE_URL="http://localhost:8080"
 WEB_APP_BASE_URL="http://localhost:3000"
 
 # Google OAuth
+
 GOOGLE_CLIENT_ID="seu_id_do_google.apps.googleusercontent.com"
 GOOGLE_CLIENT_SECRET="sua_chave_secreta_do_google"
 
 # APIs de IA
+
 GOOGLE_GENERATIVE_AI_API_KEY="sua_chave_gemini_aqui"
 OPENAI_API_KEY="sk-..." # Opcional
 Explicação das Regras nos Arquivos
@@ -543,7 +549,6 @@ prismaAdapter: Faz com que o BetterAuth salve usuários e sessões automaticamen
 crossSubDomainCookies: No seu código, está configurado para que, em produção, os cookies funcionem em todos os subdomínios de .fullstackclub.com.br.
 openAPI(): Um plugin que gera documentação automática das rotas de autenticação.
 Dica: Certifique-se de que as tabelas do BetterAuth foram criadas no banco de dados (geralmente via npx prisma migrate dev ou npx better-auth migrate).
-
 
 \***\*\*\*\*\*\*\*** DEPLOY DA APLICAÇÃO USANDO DOCKER \***\*\*\*\*\***\*\***\*\*\*\*\***
 
@@ -572,10 +577,9 @@ passo1 - Criar uma conta - create new web service
 passo2 - selecionar o repositório do gitHUb
 passo3 - Selecionar o repositorio do projeto
 
-
 2 - CONFIGURA OS VALORES DAS VARIÁVEIS DE AMBIENTE CONFORME ARQUIVO env.ts
 
-****** NO "NEON" CRIAR UM NOVO PROJETO PARA GERAR A URL DE CONEXÃO BANCO ********
+**\*\*** NO "NEON" CRIAR UM NOVO PROJETO PARA GERAR A URL DE CONEXÃO BANCO **\*\*\*\***
 
 - NEW PROJECT
 - INFORME NOME, VERSAO, PROVIDER E REGION
@@ -588,12 +592,14 @@ DATABASE_URL="postgresql://postgres:password@127.0.0.1:5432/bootcamp-treinos-api
 3 - MIGRA AS TABELAS PARA O BANCO DE DADOS CRIADO NO NEON - ALTERAR NO .env para url de conexão com NEON
 
 # URL - NEON
+
 DATABASE_URL="postgresql://neondb_owner:npg_5YsZ8caAjKoJ@ep-fragrant-pond-amrtrttq-pooler.c-5.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
 # URL CONEXÃO LOCAL
+
 #DATABASE_URL="postgresql://postgres:password@127.0.0.1:5432/bootcamp-treinos-api?schema=public"
 
-4 - EXECUTAR 
+4 - EXECUTAR
 
 !!! migration é um arquivo SQL que contendo todas as mudanção do banco
 
@@ -607,18 +613,16 @@ Applying migration `20260329160325_init`
 The following migration(s) have been created and applied from new schema changes:
 
 prisma\migrations/
-  └─ 20260329160325_init/
-    └─ migration.sql
+└─ 20260329160325_init/
+└─ migration.sql
 
 Your database is now in sync with your schema.
 ┌─────────────────────────────────────────────────────────┐
-│  Update available 7.5.0 -> 7.6.0                        │
-│  Run the following to update                            │
-│    npm i --save-dev prisma@latest                       │
-│    npm i @prisma/client@latest                          │
+│ Update available 7.5.0 -> 7.6.0 │
+│ Run the following to update │
+│ npm i --save-dev prisma@latest │
+│ npm i @prisma/client@latest │
 └─────────────────────────────────────────────────────────┘
-
-
 
 5 - AGOARA APLICAR NO DEPLOY
 
@@ -631,32 +635,30 @@ Datasource "db": PostgreSQL database "neondb", schema "public" at "ep-fragrant-p
 
 1 migration found in prisma/migrations
 
-
 No pending migrations to apply.
 
-
-6 - 
+6 -
 
 FELIPE!!! VERIFICAR NO FSC COMO IMPLEMENTAR PLANO DE ASSINATURA NO MEU PROJETO
 
-****************** ERRO NO GIT **********
+********\*\********* ERRO NO GIT ****\*\*****
 
 4. Limpe o cache do Git para esse arquivo
-Isso garante que o Git pare de rastrear esse arquivo totalmente:
-code
-Bash
-git rm -r --cached google_client_secret.json
+   Isso garante que o Git pare de rastrear esse arquivo totalmente:
+   code
+   Bash
+   git rm -r --cached google_client_secret.json
 
+!!! ERRO NO DEPLOY - COMPARTILHAMENTO de COOKIES NO domínio onrender.com por ser publico NÃO É PERMITIDO
 
-!!! ERRO NO DEPLOY - COMPARTILHAMENTO de COOKIES NO domínio onrender.com por ser publico NÃO É PERMITIDO 
-
-QUAL SOLUÇÃO? 
+QUAL SOLUÇÃO?
 
 1 - REGISTRA UM DOMINIO (gtreino.online)
 2 - Configura no Render
+
 - Selecione o projeto - settings - Custom Domains - Add Custom Domain e "gtreino.online)"
 
-*************************** configurar os registros de DNS ******************
+************\*\*\************* configurar os registros de DNS ********\*\*********
 
 Descreva passo a passo como configurar os registros de DNS de forma que oa digitar no browser o dominio "gtreino.online" que está registrado na GoDaddy seja direcionado para minha aplicação que está deployada no Render conforme URLs abaixo:
 URL Backend:
@@ -665,9 +667,7 @@ https://ithekgtreinoback.onrender.com
 URL Frontend:
 https://ithekgtreinofront.onrender.com
 
-
-/////********configurar o seu domínio gtreino.online (GoDaddy)******//////////
-
+/////**\*\*\*\***configurar o seu domínio gtreino.online (GoDaddy)**\*\***//////////
 
 Para configurar o seu domínio gtreino.online (GoDaddy) para apontar para o seu Frontend no Render e criar um subdomínio (ex: api.gtreino.online) para o seu Backend, siga este passo a passo:
 
@@ -695,10 +695,10 @@ Passo 3: Configurar o DNS na GoDaddy
 Agora, acesse sua conta na GoDaddy para criar os registros.
 Vá em Meus Produtos -> Encontre o domínio gtreino.online -> Clique em DNS.
 Você precisará adicionar/editar 3 registros principais:
-Tipo	Nome (Host)	Valor (Aponta para)	Notas
-A	@	216.24.57.1 (Confirme o IP no painel do Render)	Direciona o domínio "raiz" para o Frontend
-CNAME	www	ithekgtreinofront.onrender.com	Direciona o www para o Frontend
-CNAME	api	ithekgtreinoback.onrender.com	Cria o endereço api.gtreino.online para o Backend
+Tipo Nome (Host) Valor (Aponta para) Notas
+A @ 216.24.57.1 (Confirme o IP no painel do Render) Direciona o domínio "raiz" para o Frontend
+CNAME www ithekgtreinofront.onrender.com Direciona o www para o Frontend
+CNAME api ithekgtreinoback.onrender.com Cria o endereço api.gtreino.online para o Backend
 Observação: Se já existirem registros "A" com nome @ ou CNAME com nome www, edite-os em vez de criar novos.
 
 Passo 4: Atualizar as Variáveis de Ambiente (MUITO IMPORTANTE)
@@ -723,9 +723,9 @@ Abra o terminal (CMD ou PowerShell) e digite:
 ping gtreino.online (Deve mostrar o IP do Render).
 ping api.gtreino.online (Deve mostrar o endereço do Render).
 
-*********************//////////////////***************/////////////////
+**********\***********//////////////////******\*\*\*******/////////////////
 
-Corrija! No item 5 do  Passo 1: Configurar o Frontend no Render, ocorre o erro abaixo ao tentar salvar
+Corrija! No item 5 do Passo 1: Configurar o Frontend no Render, ocorre o erro abaixo ao tentar salvar
 This domain already exists on another site. Please delete it from that site and try again.
 Model 18:17
 ThinkingThoughts
@@ -735,20 +735,17 @@ chevron_right
 Esse erro acontece porque o Render não permite que o mesmo domínio exato (gtreino.online) esteja vinculado a dois serviços diferentes ao mesmo tempo.
 Provavelmente, você tentou adicionar gtreino.online tanto no Backend quanto no Frontend, ou ele ficou "preso" em algum serviço antigo que você criou para testes.
 Para corrigir, siga estes passos:
-1. Verifique o seu serviço de BACKEND
-É muito comum as pessoas tentarem colocar o domínio principal no backend primeiro.
-Vá ao Dashboard do Render e clique no serviço ithekgtreinoback.
-Vá em Settings -> Custom Domains.
-Se o domínio gtreino.online (ou www.gtreino.online) aparecer lá, clique no "X" ou na lixeira para removê-lo.
-Certifique-se de que no Backend fique apenas o subdomínio: api.gtreino.online.
 
+1. Verifique o seu serviço de BACKEND
+   É muito comum as pessoas tentarem colocar o domínio principal no backend primeiro.
+   Vá ao Dashboard do Render e clique no serviço ithekgtreinoback.
+   Vá em Settings -> Custom Domains.
+   Se o domínio gtreino.online (ou www.gtreino.online) aparecer lá, clique no "X" ou na lixeira para removê-lo.
+   Certifique-se de que no Backend fique apenas o subdomínio: api.gtreino.online.
 
 PROMPT PARA CRIAR O GUIA DE CONFIGURAÇÃO BETTER-AUTH x GOOGLE x render x Godaddy
 
 Tenho meu dominio "gtreino.online" registrado Godaddy. Minha aplicação tem um front(React com NextJs) e backend(Node com Fastify). Descreva passo a passo como colocar a API num subdomínio como "api.gtreino.online" e configurar o Better Auth com crossSubDomainCookies
-
-
-
 
 **\*\***\*\*\*\***\*\***Balança de bioimpedancia FitDays **\*\*\*\***\*\*\***\*\*\*\***
 
@@ -756,13 +753,11 @@ resumo de todas as taxas corporais conforme peso, idade e altura
 
 LETRAS A e F + ? PARA GERAR CERTIFICADO
 
-
-
-Fala Magaiver!!! bom dia amigão... espero que esteja tudo na paz contigo meu brother!!!:raised_hands: 
+Fala Magaiver!!! bom dia amigão... espero que esteja tudo na paz contigo meu brother!!!:raised_hands:
 
 passando para atulizar sobre as ações:
 
-Fiz TODOS os ajustes conforme você orientou.  
+Fiz TODOS os ajustes conforme você orientou.
 
 1 - No seu backend, nas variáveis de ambiente da Vercel, mude o API_BASE_URL para apontar para o domínio do frontend:
 API_BASE_URL=https://gtreino.online/
@@ -770,44 +765,44 @@ BETTER_AUTH_URL=https://gtreino.online/ (NÃO EXISTIA . CRIEI! E CONFIGUREI NO R
 
 2 - Depois no auth.ts do backend confirma que o baseURL está usando essa variável:
 export const auth = betterAuth({
-  baseURL: env.API_BASE_URL,                               // domínio do FRONTEND (https://gtreino.online/))
-  trustedOrigins: [env.WEB_APP_BASE_URL],     // (https://gtreino.online/)
-  ...
+baseURL: env.API_BASE_URL, // domínio do FRONTEND (https://gtreino.online/))
+trustedOrigins: [env.WEB_APP_BASE_URL], // (https://gtreino.online/)
+...
 })
 
-3 - No Google Cloud Console**, confirma que você tem as duas URIs de redirecionamento cadastradas:
+3 - No Google Cloud Console\*\*, confirma que você tem as duas URIs de redirecionamento cadastradas:
 
 https://gtreino.online/api/auth/callback/google
 https://api.gtreino.online/api/auth/callback/google
 
 4 - No frontend, o auth-client.ts deve apontar para o próprio domínio do frontend:
 export const authClient = createAuthClient({
-  baseURL: 'https://gtreino.online/',
+baseURL: 'https://gtreino.online/',
 })
- 
-O MEU auth-client.ts TÁ ASSIM :point_down: 
+
+O MEU auth-client.ts TÁ ASSIM :point_down:
 
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+baseURL: process.env.NEXT_PUBLIC_BASE_URL,
 });
 
-** CONTEÚDO DO ".env"  frontend :point_down: 
+\*\* CONTEÚDO DO ".env" frontend :point_down:
 
 NEXT_PUBLIC_API_URL=https://api.gtreino.online
 NEXT_PUBLIC_BASE_URL=https://gtreino.online
 
 5 - E você precisa criar o arquivo app/api/auth/[...all]/route.ts no frontend para fazer o proxy das chamadas de auth para a API, porque os cookies precisam ser same-origin para funcionar:
 
-FEITO! Porém, ocorreu um erro na compilação... segue AJUSTE! 
+FEITO! Porém, ocorreu um erro na compilação... segue AJUSTE!
 
-Linha :point_down: 
+Linha :point_down:
 
 const url = ${API_URL}${request.nextUrl.pathname}${request.nextUrl.search};
 
-  // CORREÇÃO: Adicionado as crases na linha abaixo
-  const url = `${API_URL}${request.nextUrl.pathname}${request.nextUrl.search}`;
+// CORREÇÃO: Adicionado as crases na linha abaixo
+const url = `${API_URL}${request.nextUrl.pathname}${request.nextUrl.search}`;
 
 Segue conteúdo do "app/api/auth/[...all]/route.ts" atualizado:
 
@@ -817,20 +812,20 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 const BLOCKED = new Set(['host','content-length','connection','transfer-encoding']);
 
 async function proxy(request: NextRequest): Promise<NextResponse> {
-  // CORREÇÃO: Adicionado as crases na linha abaixo
-  const url = `${API_URL}${request.nextUrl.pathname}${request.nextUrl.search}`;
-  
-  const headers = new Headers();
-  request.headers.forEach((v, k) => { if (!BLOCKED.has(k)) headers.set(k, v); });
+// CORREÇÃO: Adicionado as crases na linha abaixo
+const url = `${API_URL}${request.nextUrl.pathname}${request.nextUrl.search}`;
 
-  const body = request.method !== 'GET' ? await request.text() : undefined;
-  const res = await fetch(url, { method: request.method, headers, body, redirect: 'manual' });
+const headers = new Headers();
+request.headers.forEach((v, k) => { if (!BLOCKED.has(k)) headers.set(k, v); });
 
-  const next = new NextResponse(res.body, { status: res.status });
-  const cookies = res.headers.getSetCookie?.() ?? [];
-  res.headers.forEach((v, k) => { if (k !== 'set-cookie') next.headers.set(k, v); });
-  cookies.forEach(c => next.headers.append('set-cookie', c));
-  return next;
+const body = request.method !== 'GET' ? await request.text() : undefined;
+const res = await fetch(url, { method: request.method, headers, body, redirect: 'manual' });
+
+const next = new NextResponse(res.body, { status: res.status });
+const cookies = res.headers.getSetCookie?.() ?? [];
+res.headers.forEach((v, k) => { if (k !== 'set-cookie') next.headers.set(k, v); });
+cookies.forEach(c => next.headers.append('set-cookie', c));
+return next;
 }
 
 export const GET = proxy;
@@ -839,8 +834,10 @@ export const PUT = proxy;
 export const DELETE = proxy;
 export const PATCH = proxy;
 
-** ATENÇÃO FSC!! Deixamos aqui  nosso histórico de integração como contribuição para uma possível ajuda em casos futuros... 
+\*\* ATENÇÃO FSC!! Deixamos aqui nosso histórico de integração como contribuição para uma possível ajuda em casos futuros...
 
-E ao @Magaiver, fica meu agradecimento e gratidão pela atitude de um profissional ELITE que NÃO poupou esforço e dispôs seu para compartilhar seu conhecimento... PARABÉNS amigão!!!! 
+E ao @Magaiver, fica meu agradecimento e gratidão pela atitude de um profissional ELITE que NÃO poupou esforço e dispôs seu para compartilhar seu conhecimento... PARABÉNS amigão!!!!
 
+INSTALANDO BIBLITECAS NO FRONTEMD
 
+PS C:\Ithek-Projetos\FullStackClub\Saas-FullStack\IthekGTreinoFront> pnpm i --save-dev @types/node

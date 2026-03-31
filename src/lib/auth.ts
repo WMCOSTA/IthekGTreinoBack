@@ -7,7 +7,11 @@ import { env } from "./env.js";
 
 export const auth = betterAuth({
   baseURL: env.API_BASE_URL,
-  trustedOrigins: [env.WEB_APP_BASE_URL],
+  trustedOrigins: [
+    env.WEB_APP_BASE_URL,
+    "https://gtreino.online",
+    "https://www.gtreino.online",
+  ],
   socialProviders: {
     google: {
       prompt: "select_account",
@@ -26,8 +30,7 @@ export const auth = betterAuth({
     // Removido o ponto em ".gtreino.online"
     crossSubDomainCookies: {
       enabled: true,
-      domain:
-        env.NODE_ENV === "production" ? "gtreino.online" : undefined,
+      domain: env.NODE_ENV === "production" ? "gtreino.online" : undefined,
     },
   },
 });
