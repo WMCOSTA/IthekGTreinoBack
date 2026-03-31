@@ -18,4 +18,4 @@ const envSchema = z.object({
     .default("development"),
 });
 
-export const env = envSchema.parse(process.env);
+export const env = envSchema.parse(process.env);export const env = envSchema.parse(process.env);
