@@ -743,10 +743,104 @@ Se o domínio gtreino.online (ou www.gtreino.online) aparecer lá, clique no "X"
 Certifique-se de que no Backend fique apenas o subdomínio: api.gtreino.online.
 
 
+PROMPT PARA CRIAR O GUIA DE CONFIGURAÇÃO BETTER-AUTH x GOOGLE x render x Godaddy
+
+Tenho meu dominio "gtreino.online" registrado Godaddy. Minha aplicação tem um front(React com NextJs) e backend(Node com Fastify). Descreva passo a passo como colocar a API num subdomínio como "api.gtreino.online" e configurar o Better Auth com crossSubDomainCookies
+
+
+
+
 **\*\***\*\*\*\***\*\***Balança de bioimpedancia FitDays **\*\*\*\***\*\*\***\*\*\*\***
 
 resumo de todas as taxas corporais conforme peso, idade e altura
 
 LETRAS A e F + ? PARA GERAR CERTIFICADO
+
+
+
+Fala Magaiver!!! bom dia amigão... espero que esteja tudo na paz contigo meu brother!!!:raised_hands: 
+
+passando para atulizar sobre as ações:
+
+Fiz TODOS os ajustes conforme você orientou.  
+
+1 - No seu backend, nas variáveis de ambiente da Vercel, mude o API_BASE_URL para apontar para o domínio do frontend:
+API_BASE_URL=https://gtreino.online/
+BETTER_AUTH_URL=https://gtreino.online/ (NÃO EXISTIA . CRIEI! E CONFIGUREI NO RENDER)
+
+2 - Depois no auth.ts do backend confirma que o baseURL está usando essa variável:
+export const auth = betterAuth({
+  baseURL: env.API_BASE_URL,                               // domínio do FRONTEND (https://gtreino.online/))
+  trustedOrigins: [env.WEB_APP_BASE_URL],     // (https://gtreino.online/)
+  ...
+})
+
+3 - No Google Cloud Console**, confirma que você tem as duas URIs de redirecionamento cadastradas:
+
+https://gtreino.online/api/auth/callback/google
+https://api.gtreino.online/api/auth/callback/google
+
+4 - No frontend, o auth-client.ts deve apontar para o próprio domínio do frontend:
+export const authClient = createAuthClient({
+  baseURL: 'https://gtreino.online/',
+})
+ 
+O MEU auth-client.ts TÁ ASSIM :point_down: 
+
+import { createAuthClient } from "better-auth/react";
+
+export const authClient = createAuthClient({
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+});
+
+** CONTEÚDO DO ".env"  frontend :point_down: 
+
+NEXT_PUBLIC_API_URL=https://api.gtreino.online
+NEXT_PUBLIC_BASE_URL=https://gtreino.online
+
+5 - E você precisa criar o arquivo app/api/auth/[...all]/route.ts no frontend para fazer o proxy das chamadas de auth para a API, porque os cookies precisam ser same-origin para funcionar:
+
+FEITO! Porém, ocorreu um erro na compilação... segue AJUSTE! 
+
+Linha :point_down: 
+
+const url = ${API_URL}${request.nextUrl.pathname}${request.nextUrl.search};
+
+  // CORREÇÃO: Adicionado as crases na linha abaixo
+  const url = `${API_URL}${request.nextUrl.pathname}${request.nextUrl.search}`;
+
+Segue conteúdo do "app/api/auth/[...all]/route.ts" atualizado:
+
+import { NextRequest, NextResponse } from 'next/server';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+const BLOCKED = new Set(['host','content-length','connection','transfer-encoding']);
+
+async function proxy(request: NextRequest): Promise<NextResponse> {
+  // CORREÇÃO: Adicionado as crases na linha abaixo
+  const url = `${API_URL}${request.nextUrl.pathname}${request.nextUrl.search}`;
+  
+  const headers = new Headers();
+  request.headers.forEach((v, k) => { if (!BLOCKED.has(k)) headers.set(k, v); });
+
+  const body = request.method !== 'GET' ? await request.text() : undefined;
+  const res = await fetch(url, { method: request.method, headers, body, redirect: 'manual' });
+
+  const next = new NextResponse(res.body, { status: res.status });
+  const cookies = res.headers.getSetCookie?.() ?? [];
+  res.headers.forEach((v, k) => { if (k !== 'set-cookie') next.headers.set(k, v); });
+  cookies.forEach(c => next.headers.append('set-cookie', c));
+  return next;
+}
+
+export const GET = proxy;
+export const POST = proxy;
+export const PUT = proxy;
+export const DELETE = proxy;
+export const PATCH = proxy;
+
+** ATENÇÃO FSC!! Deixamos aqui  nosso histórico de integração como contribuição para uma possível ajuda em casos futuros... 
+
+E ao @Magaiver, fica meu agradecimento e gratidão pela atitude de um profissional ELITE que NÃO poupou esforço e dispôs seu para compartilhar seu conhecimento... PARABÉNS amigão!!!! 
 
 

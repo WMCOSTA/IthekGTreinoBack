@@ -20,10 +20,14 @@ export const auth = betterAuth({
   }),
   plugins: [openAPI()],
   advanced: {
+    // minha inclusão
+    cookiePrefix: "gtreino-auth",
+    // Isso permite que o cookie seja compartilhado entre api e www
+    // Removido o ponto em ".gtreino.online"
     crossSubDomainCookies: {
       enabled: true,
       domain:
-        env.NODE_ENV === "production" ? ".gtreino.online" : undefined,
+        env.NODE_ENV === "production" ? "gtreino.online" : undefined,
     },
   },
 });
